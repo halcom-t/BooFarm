@@ -7803,6 +7803,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a7565c026859a4fb0fd5ba647f31df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundTiles:
+  - {fileID: 11400000, guid: c78d6299f8fd38d458250b37056fe729, type: 2}
+  - {fileID: 11400000, guid: 26056fecadfcb954792b2f1265051fd7, type: 2}
+  - {fileID: 11400000, guid: dc393135a3633c148986c66d7b490547, type: 2}
+  groundObj: {fileID: 1660512160}
 --- !u!212 &2079887510
 SpriteRenderer:
   m_ObjectHideFlags: 0

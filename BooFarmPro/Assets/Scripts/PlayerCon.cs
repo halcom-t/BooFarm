@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// プレイヤー関連
@@ -13,19 +14,27 @@ public class PlayerCon : MonoBehaviour
         None, 
         Kuwa    //クワ
     }
+    //装備中の道具＜-------------------------------------デバッグ後Noneにする
+    ToolStatus nowTool = ToolStatus.Kuwa;
+
+    //地面の各タイル＜-----------------------------------画像差し替え必要（index増えるかも）
+    [SerializeField] TileBase[] groundTiles;
+    //地面のタイルマップ
+    [SerializeField] GameObject groundObj;
+    //地面のタイルマップ情報
+    Tilemap groundTilemap;
 
     //タップした位置
     Vector3 tapPos;
-
     //長押し時間計測用タイマー
     float longTapTimer;
-
     //タップ判定時間
     const float tapTime = 0.15f;
 
     void Start()
     {
-        
+        //地面のタイルマップ情報
+        groundTilemap = groundObj.GetComponent<Tilemap>();
     }
 
     void Update()
@@ -42,8 +51,7 @@ public class PlayerCon : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             //タップならアクション実行
-            if (isTap())TapAction();
-            
+            if (isTap())TapAction();        
         }
 
         //長押し中
@@ -77,7 +85,25 @@ public class PlayerCon : MonoBehaviour
     /// </summary>
     void TapAction()
     {
+        //装備中の各道具処理
+        switch (nowTool)
+        {
+            case ToolStatus.None:   //装備なし
+                break;
+            case ToolStatus.Kuwa:   //クワ
+                KuwaAction();
+                break;
+            default:
+                break;
+        }
+    }
 
+    /// <summary>
+    /// クワ装備時のアクション
+    /// </summary>
+    void KuwaAction()
+    {
+        groundTilemap.SetTile(new Vector3Int(0,0,0), groundTiles[1]);
     }
 
     /// <summary>

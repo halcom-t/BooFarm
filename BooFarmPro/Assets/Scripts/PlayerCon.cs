@@ -8,6 +8,14 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class PlayerCon : MonoBehaviour
 {
+    //方向（現在向いている方向はアニメーションパラメータ「Direction」から取得）
+    enum DirectionType
+    {
+        front,  //前（正面）
+        back,   //後
+        left,   //左
+        right   //右
+    }
 
     //道具
     enum ToolStatus{
@@ -24,6 +32,9 @@ public class PlayerCon : MonoBehaviour
     //地面のタイルマップ情報
     Tilemap groundTilemap;
 
+    //プレイヤーのアニメーター
+    Animator anim;
+
     //タップした位置
     Vector3 tapPos;
     //長押し時間計測用タイマー
@@ -35,6 +46,8 @@ public class PlayerCon : MonoBehaviour
     {
         //地面のタイルマップ情報
         groundTilemap = groundObj.GetComponent<Tilemap>();
+        //アニメーター
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -51,7 +64,7 @@ public class PlayerCon : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             //タップならアクション実行
-            if (isTap())TapAction();        
+            if (IsTap())TapAction();        
         }
 
         //長押し中
@@ -70,14 +83,38 @@ public class PlayerCon : MonoBehaviour
     void Move()
     {
         //タップなら移動処理をしない
-        if (isTap()) return;
+        if (IsTap()) return;
 
         //スワイプしている位置を取得（画面中央 0,0）
         float swipePosX = Input.mousePosition.x - Screen.width / 2;
         float swipePosY = Input.mousePosition.y - Screen.height / 2;
 
         //移動
-        transform.Translate(new Vector2(swipePosX, swipePosY).normalized * Time.deltaTime * 2);
+        Vector2 direction = new Vector2(swipePosX, swipePosY).normalized;
+        transform.Translate(direction * Time.deltaTime * 2);
+
+        //現在の方向をアニメーションパラメータ「Direction」に設定
+        anim.SetInteger("Direction", (int)IsDirection(direction));
+    }
+
+    /// <summary>
+    /// 向いている方向を判定
+    /// </summary>
+    /// <param name="nowDirection">方向判定用のベクトル</param>
+    /// <returns>現在向いている方向</returns>
+    DirectionType IsDirection(Vector2 directionVector)
+    {
+        //ベクトルからどの方向を向かせるか（4方向）判定＜-----------------------------------ここの処理三角関数使いたい
+        if (Mathf.Abs(directionVector.x) <= Mathf.Abs(directionVector.y))
+        {
+            if (directionVector.y <= 0) return DirectionType.front;
+            else return DirectionType.back;
+        }
+        else
+        {
+            if (directionVector.x <= 0) return DirectionType.left;
+            else return DirectionType.right;
+        }
     }
 
     /// <summary>
@@ -111,7 +148,7 @@ public class PlayerCon : MonoBehaviour
     /// ※現時点での長押しがタップに該当するかを判定する
     /// </summary>
     /// <returns>タップ=true</returns>
-    bool isTap()
+    bool IsTap()
     {
         //タップ　=　長押し時間がタップ判定時間以内　＆　タップ位置がずれていない
         return longTapTimer <= tapTime && tapPos == Input.mousePosition;

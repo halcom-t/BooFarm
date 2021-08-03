@@ -25,8 +25,11 @@ public class PlayerCon : MonoBehaviour
     //装備中の道具＜-------------------------------------デバッグ後Noneにする
     ToolStatus nowTool = ToolStatus.Kuwa;
 
-    //地面の各タイル＜-----------------------------------画像差し替え必要（index増えるかも）
-    [SerializeField] TileBase[] groundTiles;
+    //道具の使用範囲
+    [SerializeField] GameObject toolFrame;
+
+   //地面の各タイル＜-----------------------------------画像差し替え必要（index増えるかも）
+   [SerializeField] TileBase[] groundTiles;
     //地面のタイルマップ
     [SerializeField] GameObject groundObj;
     //地面のタイルマップ情報
@@ -52,7 +55,6 @@ public class PlayerCon : MonoBehaviour
 
     void Update()
     {
-
         //タップした時
         if (Input.GetMouseButtonDown(0))
         {
@@ -73,8 +75,46 @@ public class PlayerCon : MonoBehaviour
             //長押し時間の計測
             longTapTimer += Time.deltaTime;
             //移動
-            Move();        
+            Move();
+            //道具の使用範囲の計算
+            ToolFramePos();
         }
+    }
+
+    /// <summary>
+    /// 道具の使用範囲の計算
+    /// </summary>
+    void ToolFramePos()
+    {
+        float x = Mathf.Floor(transform.position.x);
+        float y = Mathf.Floor(transform.position.y);
+        float z = 0f;
+
+        //各方向を向いているときの道具使用範囲の位置を計算＜-----------------------------------コード短くしたい
+        if (anim.GetInteger("Direction") == (int)DirectionType.front)
+        {
+            x += 0.5f;
+            y -= 0.5f;
+        }
+        else if (anim.GetInteger("Direction") == (int)DirectionType.back)
+        {
+            x += 0.5f;
+            y += 1.5f;
+        }
+        else if (anim.GetInteger("Direction") == (int)DirectionType.left)
+        {
+            x -= 0.5f;
+            y += 0.5f;
+        }
+        else if (anim.GetInteger("Direction") == (int)DirectionType.right)
+        {
+            x += 1.5f;
+            y += 0.5f;
+        }
+
+        //道具使用範囲の位置を設定
+        Vector3 toolPos = new Vector3(x, y, z);
+        toolFrame.transform.position = toolPos;
     }
 
     /// <summary>
@@ -140,7 +180,7 @@ public class PlayerCon : MonoBehaviour
     /// </summary>
     void KuwaAction()
     {
-        groundTilemap.SetTile(new Vector3Int(0,0,0), groundTiles[1]);
+        //groundTilemap.SetTile(toolPos, groundTiles[1]);  
     }
 
     /// <summary>

@@ -76,45 +76,7 @@ public class PlayerCon : MonoBehaviour
             longTapTimer += Time.deltaTime;
             //移動
             Move();
-            //道具の使用範囲の計算
-            ToolFramePos();
         }
-    }
-
-    /// <summary>
-    /// 道具の使用範囲の計算
-    /// </summary>
-    void ToolFramePos()
-    {
-        float x = Mathf.Floor(transform.position.x);
-        float y = Mathf.Floor(transform.position.y);
-        float z = 0f;
-
-        //各方向を向いているときの道具使用範囲の位置を計算＜-----------------------------------コード短くしたい
-        if (anim.GetInteger("Direction") == (int)DirectionType.front)
-        {
-            x += 0.5f;
-            y -= 0.5f;
-        }
-        else if (anim.GetInteger("Direction") == (int)DirectionType.back)
-        {
-            x += 0.5f;
-            y += 1.5f;
-        }
-        else if (anim.GetInteger("Direction") == (int)DirectionType.left)
-        {
-            x -= 0.5f;
-            y += 0.5f;
-        }
-        else if (anim.GetInteger("Direction") == (int)DirectionType.right)
-        {
-            x += 1.5f;
-            y += 0.5f;
-        }
-
-        //道具使用範囲の位置を設定
-        Vector3 toolPos = new Vector3(x, y, z);
-        toolFrame.transform.position = toolPos;
     }
 
     /// <summary>
@@ -133,8 +95,26 @@ public class PlayerCon : MonoBehaviour
         Vector2 direction = new Vector2(swipePosX, swipePosY).normalized;
         transform.Translate(direction * Time.deltaTime * 2);
 
+        //移動中、道具の使用位置（マス）を更新
+        UpdateToolFrame(direction);
+
         //現在の方向をアニメーションパラメータ「Direction」に設定
         anim.SetInteger("Direction", (int)IsDirection(direction));
+    }
+
+    /// <summary>
+    /// 道具の使用位置（マス）の更新処理
+    /// </summary>
+    /// <param name="direction">プレイヤーの移動方向（ベクトル）</param>
+    void UpdateToolFrame(Vector2 direction)
+    {
+        //道具の使用位置（プレイヤーの正面位置）の計算　=　プレイヤー位置　＋　移動方向（ベクトル）
+        Vector3 toolPos = transform.position + new Vector3(direction.x, direction.y, 0);
+        //道具の使用位置をマス目単位に調整
+        toolPos = new Vector3(Mathf.Floor(toolPos.x) + 0.5f, Mathf.Floor(toolPos.y) + 0.5f, 0);
+
+        //道具の使用位置を更新
+        toolFrame.transform.position = toolPos;
     }
 
     /// <summary>

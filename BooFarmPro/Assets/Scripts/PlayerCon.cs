@@ -8,15 +8,6 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class PlayerCon : MonoBehaviour
 {
-    //方向（現在向いている方向はアニメーションパラメータ「Direction」から取得）
-    enum DirectionType
-    {
-        front,  //前（正面）
-        back,   //後
-        left,   //左
-        right   //右
-    }
-
     //道具
     enum ToolStatus{
         None, 
@@ -35,9 +26,6 @@ public class PlayerCon : MonoBehaviour
     //地面のタイルマップ情報
     Tilemap groundTilemap;
 
-    //プレイヤーのアニメーター
-    Animator anim;
-
     //タップした位置
     Vector3 tapPos;
     //長押し時間計測用タイマー
@@ -49,8 +37,6 @@ public class PlayerCon : MonoBehaviour
     {
         //地面のタイルマップ情報
         groundTilemap = groundObj.GetComponent<Tilemap>();
-        //アニメーター
-        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -98,8 +84,6 @@ public class PlayerCon : MonoBehaviour
         //移動中、道具の使用位置（マス）を更新
         UpdateToolFrame(direction);
 
-        //現在の方向をアニメーションパラメータ「Direction」に設定
-        anim.SetInteger("Direction", (int)IsDirection(direction));
     }
 
     /// <summary>
@@ -115,26 +99,6 @@ public class PlayerCon : MonoBehaviour
 
         //道具の使用位置を更新
         toolFrame.transform.position = toolPos;
-    }
-
-    /// <summary>
-    /// 向いている方向を判定
-    /// </summary>
-    /// <param name="nowDirection">方向判定用のベクトル</param>
-    /// <returns>現在向いている方向</returns>
-    DirectionType IsDirection(Vector2 directionVector)
-    {
-        //ベクトルからどの方向を向かせるか（4方向）判定＜-----------------------------------ここの処理三角関数使いたい
-        if (Mathf.Abs(directionVector.x) <= Mathf.Abs(directionVector.y))
-        {
-            if (directionVector.y <= 0) return DirectionType.front;
-            else return DirectionType.back;
-        }
-        else
-        {
-            if (directionVector.x <= 0) return DirectionType.left;
-            else return DirectionType.right;
-        }
     }
 
     /// <summary>

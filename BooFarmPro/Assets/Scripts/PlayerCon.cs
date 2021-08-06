@@ -10,8 +10,9 @@ public class PlayerCon : MonoBehaviour
 {
     //道具
     enum ToolStatus{
-        None, 
-        Kuwa    //クワ
+        None,   //装備なし
+        Kuwa,   //クワ
+        Joro    //ジョウロ
     }
     //装備中の道具＜-------------------------------------デバッグ後Noneにする
     ToolStatus nowTool = ToolStatus.Kuwa;

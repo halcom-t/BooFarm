@@ -9,16 +9,18 @@ using UnityEngine.Tilemaps;
 public class PlayerCon : MonoBehaviour
 {
     //道具
-    enum ToolStatus{
+    public enum ToolStatus
+    {
         None,   //装備なし
         Kuwa,   //クワ
         Joro    //ジョウロ
     }
-    //装備中の道具＜-------------------------------------デバッグ後Noneにする
-    ToolStatus nowTool = ToolStatus.Kuwa;
+
+    //装備中の道具
+    [System.NonSerialized]public ToolStatus nowTool = ToolStatus.None;
 
     //道具の使用範囲
-    [SerializeField] GameObject toolFrame;
+    public GameObject toolFrame;
 
    //地面の各タイル＜-----------------------------------画像差し替え必要（index増えるかも）
    [SerializeField] TileBase[] groundTiles;
@@ -74,6 +76,10 @@ public class PlayerCon : MonoBehaviour
         //タップなら移動処理をしない
         if (IsTap()) return;
 
+        //UIの操作範囲を長押し中は移動処理をしない
+        Debug.Log(Input.mousePosition.y);
+        if (Input.mousePosition.y > Screen.height - 120 || Input.mousePosition.y < 120) return;
+
         //スワイプしている位置を取得（画面中央 0,0）
         float swipePosX = Input.mousePosition.x - Screen.width / 2;
         float swipePosY = Input.mousePosition.y - Screen.height / 2;
@@ -107,25 +113,7 @@ public class PlayerCon : MonoBehaviour
     /// </summary>
     void TapAction()
     {
-        //装備中の各道具処理
-        switch (nowTool)
-        {
-            case ToolStatus.None:   //装備なし
-                break;
-            case ToolStatus.Kuwa:   //クワ
-                KuwaAction();
-                break;
-            default:
-                break;
-        }
-    }
 
-    /// <summary>
-    /// クワ装備時のアクション
-    /// </summary>
-    void KuwaAction()
-    {
-        //groundTilemap.SetTile(toolPos, groundTiles[1]);  
     }
 
     /// <summary>

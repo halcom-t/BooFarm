@@ -8,6 +8,7 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class PlayerCon : MonoBehaviour
 {
+    //道具関連====================================================
     //道具
     public enum ToolStatus
     {
@@ -15,26 +16,35 @@ public class PlayerCon : MonoBehaviour
         Kuwa,   //クワ
         Joro    //ジョウロ
     }
-
     //装備中の道具
     [System.NonSerialized]public ToolStatus nowTool = ToolStatus.None;
-
     //道具の使用範囲
     public GameObject toolFrame;
 
-   //地面の各タイル＜-----------------------------------画像差し替え必要（index増えるかも）
-   [SerializeField] TileBase[] groundTiles;
+    //タイル関連==================================================
+    //タイル番号
+    enum TileIndexNum
+    {
+        Normal, //草原（デフォ）
+        Dry,    //乾いた畑
+        Wet     //湿った畑
+    }
+    //地面の各タイル
+    [SerializeField] TileBase[] groundTiles;
     //地面のタイルマップ
     [SerializeField] GameObject groundObj;
     //地面のタイルマップ情報
     Tilemap groundTilemap;
 
+    //操作関連====================================================
     //タップした位置
     Vector3 tapPos;
     //長押し時間計測用タイマー
     float longTapTimer;
     //タップ判定時間
     const float tapTime = 0.15f;
+
+
 
     void Start()
     {
@@ -76,9 +86,8 @@ public class PlayerCon : MonoBehaviour
         //タップなら移動処理をしない
         if (IsTap()) return;
 
-        //UIの操作範囲を長押し中は移動処理をしない
-        Debug.Log(Input.mousePosition.y);
-        if (Input.mousePosition.y > Screen.height - 120 || Input.mousePosition.y < 120) return;
+        //UIの操作中は移動処理をしない
+        if(IsTappingUIArea()) return;
 
         //スワイプしている位置を取得（画面中央 0,0）
         float swipePosX = Input.mousePosition.x - Screen.width / 2;
@@ -113,7 +122,37 @@ public class PlayerCon : MonoBehaviour
     /// </summary>
     void TapAction()
     {
+        //UIの操作中は処理をしない
+        if (IsTappingUIArea()) return;
 
+        //装備している道具でアクションを切り替え
+        switch (nowTool)
+        {
+            case ToolStatus.None:
+                break;
+            case ToolStatus.Kuwa:
+                KuwaAction();
+                break;
+            case ToolStatus.Joro:
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// <summary>
+    /// クワのアクション
+    /// </summary>
+    void KuwaAction()
+    {
+        int x = (int)(toolFrame.transform.position.x - 0.5f);
+        int y = (int)(toolFrame.transform.position.y - 0.5f);
+
+        //草原タイル(def)なら、乾いた畑のタイルに変更
+        if (groundTilemap.GetTile(new Vector3Int(x, y, 0)) == groundTiles[(int)TileIndexNum.Normal])
+        {
+            groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[(int)TileIndexNum.Dry]);
+        }      
     }
 
     /// <summary>
@@ -125,6 +164,16 @@ public class PlayerCon : MonoBehaviour
     {
         //タップ　=　長押し時間がタップ判定時間以内　＆　タップ位置がずれていない
         return longTapTimer <= tapTime && tapPos == Input.mousePosition;
+    }
+
+    /// <summary>
+    /// UIスペースをタップ（操作）しているか
+    /// </summary>
+    /// <returns>UIスペースの時true</returns>
+    bool IsTappingUIArea()
+    {
+        //UI範囲（縦幅）を120pxとして計算
+        return Input.mousePosition.y > Screen.height - 120 || Input.mousePosition.y < 120;
     }
 
 }

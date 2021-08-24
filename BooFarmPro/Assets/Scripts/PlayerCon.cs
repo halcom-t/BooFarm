@@ -14,7 +14,8 @@ public class PlayerCon : MonoBehaviour
     {
         None,   //装備なし
         Kuwa,   //クワ
-        Joro    //ジョウロ
+        Joro,   //ジョウロ
+        Tane    //タネ
     }
     //装備中の道具
     [System.NonSerialized]public ToolStatus nowTool = ToolStatus.None;

@@ -134,6 +134,7 @@ public class PlayerCon : MonoBehaviour
                 KuwaAction();
                 break;
             case ToolStatus.Joro:
+                JoroAcion();
                 break;
             default:
                 break;
@@ -145,14 +146,35 @@ public class PlayerCon : MonoBehaviour
     /// </summary>
     void KuwaAction()
     {
+        //草原タイル(def)なら、乾いた畑のタイルに変更
+        if (groundTilemap.GetTile(ToolFrameTilePos()) == groundTiles[(int)TileIndexNum.Normal])
+        {
+            groundTilemap.SetTile(ToolFrameTilePos(), groundTiles[(int)TileIndexNum.Dry]);
+        }      
+    }
+
+    /// <summary>
+    /// ジョウロのアクション
+    /// </summary>
+    void JoroAcion()
+    {
+        //乾いた畑なら、湿った畑のタイルに変更
+        if (groundTilemap.GetTile(ToolFrameTilePos()) == groundTiles[(int)TileIndexNum.Dry])
+        {
+            groundTilemap.SetTile(ToolFrameTilePos(), groundTiles[(int)TileIndexNum.Wet]);
+        }
+    }
+
+    /// <summary>
+    /// 道具使用マスの位置をタイル位置指定形式に変換
+    /// </summary>
+    /// <returns></returns>
+    Vector3Int ToolFrameTilePos()
+    {
         int x = (int)(toolFrame.transform.position.x - 0.5f);
         int y = (int)(toolFrame.transform.position.y - 0.5f);
 
-        //草原タイル(def)なら、乾いた畑のタイルに変更
-        if (groundTilemap.GetTile(new Vector3Int(x, y, 0)) == groundTiles[(int)TileIndexNum.Normal])
-        {
-            groundTilemap.SetTile(new Vector3Int(x, y, 0), groundTiles[(int)TileIndexNum.Dry]);
-        }      
+        return new Vector3Int(x, y, 0);
     }
 
     /// <summary>

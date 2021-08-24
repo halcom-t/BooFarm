@@ -597,6 +597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 836774487}
   - component: {fileID: 836774486}
+  - component: {fileID: 836774488}
   m_Layer: 0
   m_Name: ToolFrame
   m_TagString: Untagged
@@ -669,6 +670,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &836774488
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 836774485}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &1094303005
 GameObject:
   m_ObjectHideFlags: 0
@@ -9054,6 +9081,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 26056fecadfcb954792b2f1265051fd7, type: 2}
   - {fileID: 11400000, guid: dc393135a3633c148986c66d7b490547, type: 2}
   groundObj: {fileID: 1660512160}
+  cropPre: {fileID: 5488974853301678966, guid: 92b27f612208b5543bc61ce46ec281d0, type: 3}
 --- !u!212 &2079887510
 SpriteRenderer:
   m_ObjectHideFlags: 0

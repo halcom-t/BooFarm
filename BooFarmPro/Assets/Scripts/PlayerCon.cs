@@ -37,6 +37,10 @@ public class PlayerCon : MonoBehaviour
     //地面のタイルマップ情報
     Tilemap groundTilemap;
 
+    //作物関連====================================================
+    //作物プレファブ
+    [SerializeField] GameObject cropPre;
+
     //操作関連====================================================
     //タップした位置
     Vector3 tapPos;
@@ -137,6 +141,9 @@ public class PlayerCon : MonoBehaviour
             case ToolStatus.Joro:
                 JoroAcion();
                 break;
+            case ToolStatus.Tane:
+                TaneAction();
+                break;
             default:
                 break;
         }
@@ -148,9 +155,9 @@ public class PlayerCon : MonoBehaviour
     void KuwaAction()
     {
         //草原タイル(def)なら、乾いた畑のタイルに変更
-        if (groundTilemap.GetTile(ToolFrameTilePos()) == groundTiles[(int)TileIndexNum.Normal])
+        if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)TileIndexNum.Normal])
         {
-            groundTilemap.SetTile(ToolFrameTilePos(), groundTiles[(int)TileIndexNum.Dry]);
+            groundTilemap.SetTile(ToolFramePosInt(), groundTiles[(int)TileIndexNum.Dry]);
         }      
     }
 
@@ -160,22 +167,46 @@ public class PlayerCon : MonoBehaviour
     void JoroAcion()
     {
         //乾いた畑なら、湿った畑のタイルに変更
-        if (groundTilemap.GetTile(ToolFrameTilePos()) == groundTiles[(int)TileIndexNum.Dry])
+        if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)TileIndexNum.Dry])
         {
-            groundTilemap.SetTile(ToolFrameTilePos(), groundTiles[(int)TileIndexNum.Wet]);
+            groundTilemap.SetTile(ToolFramePosInt(), groundTiles[(int)TileIndexNum.Wet]);
         }
     }
 
     /// <summary>
-    /// 道具使用マスの位置をタイル位置指定形式に変換
+    /// 種まきアクション
+    /// </summary>
+    void TaneAction()
+    {
+        //畑なら作物プレファブの作成
+        if (groundTilemap.GetTile(ToolFramePosInt()) != groundTiles[(int)TileIndexNum.Normal])
+        {
+            Instantiate(cropPre, ToolFramePos(), Quaternion.identity);
+        }
+    }
+
+    /// <summary>
+    /// 道具使用マスの位置をタイル位置指定形式(int)で取得
     /// </summary>
     /// <returns></returns>
-    Vector3Int ToolFrameTilePos()
+    Vector3Int ToolFramePosInt()
     {
         int x = (int)(toolFrame.transform.position.x - 0.5f);
         int y = (int)(toolFrame.transform.position.y - 0.5f);
 
         return new Vector3Int(x, y, 0);
+    }
+
+    /// <summary>
+    /// 道具使用マスの位置をタイル位置指定形式(float)で取得
+    /// </summary>
+    /// <returns></returns>
+    Vector3 ToolFramePos()
+    {
+        float x = toolFrame.transform.position.x - 0.5f;
+        float y = toolFrame.transform.position.y - 0.5f;
+
+        return new Vector3(x, y, 0);
     }
 
     /// <summary>

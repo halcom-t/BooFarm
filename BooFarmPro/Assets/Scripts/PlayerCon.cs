@@ -18,28 +18,42 @@ public class PlayerCon : MonoBehaviour
         Tane    //タネ
     }
     //装備中の道具
-    [System.NonSerialized]public ToolStatus nowTool = ToolStatus.None;
+    [System.NonSerialized] public ToolStatus nowTool = ToolStatus.None;
     //道具の使用範囲
     public GameObject toolFrame;
 
-    //タイル関連==================================================
-    //タイル番号
+    //地面タイル関連===============================================
+    //地面のタイル：種類
     enum TileIndexNum
     {
         Normal, //草原（デフォ）
         Dry,    //乾いた畑
         Wet     //湿った畑
     }
-    //地面の各タイル
+
+    //地面の各タイルの種類
     [SerializeField] TileBase[] groundTiles;
-    //地面のタイルマップ
+    //地面のタイルマップ(obj)
     [SerializeField] GameObject groundObj;
     //地面のタイルマップ情報
     Tilemap groundTilemap;
 
+
     //作物関連====================================================
     //作物プレファブ
     [SerializeField] GameObject cropPre;
+
+    //作物の状態
+    enum CropStatus
+    {
+        None,
+        Seed    //種
+    }
+    //畑の範囲
+    const int FarmAreaW = 40;
+    const int FarmAreaH = 30;
+    //タイル毎の作物の状態
+    CropStatus[,] tileCropStatus = new CropStatus[FarmAreaW, FarmAreaH];
 
     //操作関連====================================================
     //タップした位置
@@ -70,7 +84,7 @@ public class PlayerCon : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             //タップならアクション実行
-            if (IsTap())TapAction();        
+            if (IsTap()) TapAction();
         }
 
         //長押し中
@@ -92,7 +106,7 @@ public class PlayerCon : MonoBehaviour
         if (IsTap()) return;
 
         //UIの操作中は移動処理をしない
-        if(IsTappingUIArea()) return;
+        if (IsTappingUIArea()) return;
 
         //スワイプしている位置を取得（画面中央 0,0）
         float swipePosX = Input.mousePosition.x - Screen.width / 2;
@@ -158,7 +172,7 @@ public class PlayerCon : MonoBehaviour
         if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)TileIndexNum.Normal])
         {
             groundTilemap.SetTile(ToolFramePosInt(), groundTiles[(int)TileIndexNum.Dry]);
-        }      
+        }
     }
 
     /// <summary>
@@ -178,10 +192,17 @@ public class PlayerCon : MonoBehaviour
     /// </summary>
     void TaneAction()
     {
-        //畑なら作物プレファブの作成
-        if (groundTilemap.GetTile(ToolFramePosInt()) != groundTiles[(int)TileIndexNum.Normal])
+        //畑じゃないマスなら種まきしない
+        if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)TileIndexNum.Normal]) return;
+        //作物が植えてあるマスなら種まきしない
+        if (tileCropStatus[ToolFramePosInt().x, ToolFramePosInt().y] != CropStatus.None) return;
+
+        //種まき処理
         {
+            //作物objの生成
             Instantiate(cropPre, ToolFramePos(), Quaternion.identity);
+            //作物の状態を種状態に変更
+            tileCropStatus[ToolFramePosInt().x, ToolFramePosInt().y] = CropStatus.Seed;
         }
     }
 

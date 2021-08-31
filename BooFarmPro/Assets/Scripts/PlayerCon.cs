@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// プレイヤー関連
@@ -63,10 +64,11 @@ public class PlayerCon : MonoBehaviour
     //タップ判定時間
     const float tapTime = 0.15f;
 
-
+    Rigidbody2D rigidbody;
 
     void Start()
     {
+        rigidbody = GetComponent<Rigidbody2D>();
         //地面のタイルマップ情報
         groundTilemap = groundObj.GetComponent<Tilemap>();
     }
@@ -83,6 +85,8 @@ public class PlayerCon : MonoBehaviour
         //離した時
         if (Input.GetMouseButtonUp(0))
         {
+            //移動速度をリセット
+            rigidbody.velocity = new Vector2(0, 0);
             //タップならアクション実行
             if (IsTap()) TapAction();
         }
@@ -114,7 +118,7 @@ public class PlayerCon : MonoBehaviour
 
         //移動
         Vector2 direction = new Vector2(swipePosX, swipePosY).normalized;
-        transform.Translate(direction * Time.deltaTime * 2);
+        rigidbody.velocity = direction * 3;
 
         //移動中、道具の使用位置（マス）を更新
         UpdateToolFrame(direction);
@@ -249,6 +253,19 @@ public class PlayerCon : MonoBehaviour
     {
         //UI範囲（縦幅）を120pxとして計算
         return Input.mousePosition.y > Screen.height - 120 || Input.mousePosition.y < 120;
+    }
+
+    /// <summary>
+    /// オブジェクトに接触した時
+    /// </summary>
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //UFO(拠点)に接触したら
+        if (collision.gameObject.tag == "Home")
+        {
+            //UFOに入る（HomeSceneのロード）
+            SceneManager.LoadScene("Home");
+        }
     }
 
 }

@@ -128,6 +128,11 @@ public class PlayerController : MonoBehaviour
             //UFOに入る（HomeSceneのロード）
             SceneManager.LoadScene("Home");
         }
+        //ベッド
+        else if (nowOperationObjTag == OperationObjTags.Bed.ToString())
+        {
+
+        }
     }
 
     /// <summary>
@@ -158,9 +163,6 @@ public class PlayerController : MonoBehaviour
     {
         //接触中のオブジェクトのタグ保存
         nowOperationObjTag = collision.gameObject.tag;
-
-        //Debug.Log("ついた：" + collision.gameObject.tag);
-        //Debug.Log(nowOperationObjTag);
     }
 
     /// <summary>
@@ -174,9 +176,6 @@ public class PlayerController : MonoBehaviour
         {
             nowOperationObjTag = "";
         }
-
-        //Debug.Log("離れる：" + collision.gameObject.tag);
-        //Debug.Log(nowOperationObjTag);
     }
 
 }

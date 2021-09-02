@@ -8,6 +8,17 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class PlayerController : MonoBehaviour
 {
+    //操作オブジェクト関連=======================================
+    //操作できるオブジェクトのタグ
+    enum OperationObjTags
+    {
+        None,
+        Home,   //UFO
+        Bed     //ベッド
+    }
+    //現在接触中のアクションオブジェクト（タグ）
+    string nowOperationObjTag;
+
     //操作関連====================================================
     //タップした位置
     Vector3 tapPos;
@@ -95,8 +106,28 @@ public class PlayerController : MonoBehaviour
         //UIエリアなら処理をしない
         if (IsTappingUIArea()) return;
 
+        //接触中の操作オブジェクトがあるならアクション
+        if (nowOperationObjTag != "")
+        {
+            OperationObjAcion();
+            return;
+        }
+
         //道具アクション
         if (toolCon != null) toolCon.ToolAction();
+    }
+
+    /// <summary>
+    /// 操作オブジェクトのアクション
+    /// </summary>
+    void OperationObjAcion()
+    {
+        //UFO(拠点)
+        if (nowOperationObjTag == OperationObjTags.Home.ToString())
+        {
+            //UFOに入る（HomeSceneのロード）
+            SceneManager.LoadScene("Home");
+        }
     }
 
     /// <summary>
@@ -125,12 +156,27 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //UFO(拠点)に接触したら
-        if (collision.gameObject.tag == "Home")
+        //接触中のオブジェクトのタグ保存
+        nowOperationObjTag = collision.gameObject.tag;
+
+        //Debug.Log("ついた：" + collision.gameObject.tag);
+        //Debug.Log(nowOperationObjTag);
+    }
+
+    /// <summary>
+    /// オブジェクトから離れた時
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        //接触中のオブジェクトのタグリセット
+        if (nowOperationObjTag == collision.gameObject.tag)
         {
-            //UFOに入る（HomeSceneのロード）
-            SceneManager.LoadScene("Home");
+            nowOperationObjTag = "";
         }
+
+        //Debug.Log("離れる：" + collision.gameObject.tag);
+        //Debug.Log(nowOperationObjTag);
     }
 
 }

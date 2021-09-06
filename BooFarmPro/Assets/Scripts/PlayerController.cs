@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour
     {
         None,
         Home,   //UFO
-        Bed     //ベッド
+        Bed,    //ベッド
+        Eixt    //UFOの出口
     }
     //現在接触中のアクションオブジェクト（タグ）
     string nowOperationObjTag;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
     //コンポーネント==============================================
     Rigidbody2D rigidbody;
     ToolController toolCon;
+    GameManager gameManager;
 
 
 
@@ -37,6 +39,8 @@ public class PlayerController : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody2D>();
         toolCon = GetComponent<ToolController>();
+        //transform.GetChild(0) = 子要素（カメラ）を取得想定
+        gameManager = transform.GetChild(0).gameObject.GetComponent<GameManager>();
     }
 
     void Update()
@@ -131,7 +135,13 @@ public class PlayerController : MonoBehaviour
         //ベッド
         else if (nowOperationObjTag == OperationObjTags.Bed.ToString())
         {
-
+            gameManager.GameDayCount();
+        }
+        //拠点出口
+        else if (nowOperationObjTag == OperationObjTags.Eixt.ToString())
+        {
+            //農園に戻る
+            SceneManager.LoadScene("Main");
         }
     }
 

@@ -1033,7 +1033,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1168036985}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.601424, y: 12.89118, z: 0}
+  m_LocalPosition: {x: 3.24, y: 7.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1711,6 +1711,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 220724692}
+  dayTime: {fileID: 7317446368613320683}
 --- !u!1 &1660512160
 GameObject:
   m_ObjectHideFlags: 0
@@ -13998,3 +13999,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 198426cf7141638458eedd9e2828a645, type: 3}
+--- !u!114 &7317446368613320683 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7317446368420316177, guid: 198426cf7141638458eedd9e2828a645, type: 3}
+  m_PrefabInstance: {fileID: 7317446368613320682}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -17,6 +17,12 @@ public class ToolController : MonoBehaviour
         Wet     //湿った畑
     }
 
+    //畑の範囲
+    const int FarmAreaW = 40;
+    const int FarmAreaH = 30;
+    //畑の各状態
+    TileIndexNum[,] groundStatus = new TileIndexNum[FarmAreaW, FarmAreaH];
+
     //地面の各タイルの種類
     [SerializeField] TileBase[] groundTiles;
     //地面のタイルマップ(obj)
@@ -48,11 +54,8 @@ public class ToolController : MonoBehaviour
         None,
         Seed    //種
     }
-    //畑の範囲
-    const int FarmAreaW = 40;
-    const int FarmAreaH = 30;
-    //タイル毎の作物の状態
-    CropStatus[,] tileCropStatus = new CropStatus[FarmAreaW, FarmAreaH];
+    //畑の各作物の成長状態
+    CropStatus[,] cropStatus = new CropStatus[FarmAreaW, FarmAreaH];
 
 
 
@@ -126,14 +129,14 @@ public class ToolController : MonoBehaviour
         //畑じゃないマスなら種まきしない
         if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)TileIndexNum.Normal]) return;
         //作物が植えてあるマスなら種まきしない
-        if (tileCropStatus[ToolFramePosInt().x, ToolFramePosInt().y] != CropStatus.None) return;
+        if (cropStatus[ToolFramePosInt().x, ToolFramePosInt().y] != CropStatus.None) return;
 
         //種まき処理
         {
             //作物objの生成
             Instantiate(cropPre, ToolFramePos(), Quaternion.identity);
             //作物の状態を種状態に変更
-            tileCropStatus[ToolFramePosInt().x, ToolFramePosInt().y] = CropStatus.Seed;
+            cropStatus[ToolFramePosInt().x, ToolFramePosInt().y] = CropStatus.Seed;
         }
     }
 

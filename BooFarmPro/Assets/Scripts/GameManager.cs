@@ -2,7 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
+
+/// <summary>
+/// セーブデータの構造
+/// </summary>
+[System.Serializable]
+public class SaveData
+{
+    public float time;          //ゲーム内：時間
+    public int day;             //ゲーム内：日付
+    public int[,] cropStatus;   //畑の各作物の成長状態
+    public int[,] groundStatus; //畑の各状態
+}
+
+
+/// <summary>
+/// ゲームの管理
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     //日時関連=======================================
@@ -32,6 +50,42 @@ public class GameManager : MonoBehaviour
     {
         //ゲーム内時間のカウント
         GameTimeCount();
+    }
+
+    /// <summary>
+    /// ゲームデータの保存
+    /// </summary>
+    /// <param name="cropStatus">畑の各作物の成長状態</param>
+    /// <param name="groundStatus">畑の各状態</param>
+    public void Save(int[,] cropStatus = null, int[,] groundStatus = null)
+    {
+        SaveData data = new SaveData();
+        data.time = gameTime;
+        data.day = gameDay;
+        if (cropStatus != null) data.cropStatus = cropStatus;
+        if (groundStatus != null) data.groundStatus = groundStatus;
+
+        using (StreamWriter writer = new StreamWriter(Application.dataPath + "/savedata.json", false))
+        {
+            string jsonstr = JsonUtility.ToJson(data);
+            writer.Write(jsonstr);
+            writer.Flush();
+        }
+    }
+
+    /// <summary>
+    /// ゲームデータのロード
+    /// </summary>
+    public SaveData Load()
+    {
+        SaveData data = null;
+        using (StreamReader reader = new StreamReader(Application.dataPath + "/savedata.json"))
+        {
+            string datastr = "";
+            datastr = reader.ReadToEnd();
+            data = JsonUtility.FromJson<SaveData>(datastr);
+        };
+        return data;
     }
 
     /// <summary>
@@ -76,7 +130,6 @@ public class GameManager : MonoBehaviour
     void GameDayReflect()
     {
         dayTime.text = gameDay + "日";
-        Debug.Log(gameDay);
     }
 
 } 

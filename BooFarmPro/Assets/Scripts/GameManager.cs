@@ -13,8 +13,7 @@ public class SaveData
 {
     public float time;          //ゲーム内：時間
     public int day;             //ゲーム内：日付
-    public int[,] cropStatus;   //畑の各作物の成長状態
-    public int[,] groundStatus; //畑の各状態
+    public int[,] groundStatus; //地面の各状態
 }
 
 
@@ -55,14 +54,12 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// ゲームデータの保存
     /// </summary>
-    /// <param name="cropStatus">畑の各作物の成長状態</param>
     /// <param name="groundStatus">畑の各状態</param>
-    public void Save(int[,] cropStatus = null, int[,] groundStatus = null)
+    public void Save(int[,] groundStatus = null)
     {
         SaveData data = new SaveData();
         data.time = gameTime;
         data.day = gameDay;
-        if (cropStatus != null) data.cropStatus = cropStatus;
         if (groundStatus != null) data.groundStatus = groundStatus;
 
         using (StreamWriter writer = new StreamWriter(Application.dataPath + "/savedata.json", false))

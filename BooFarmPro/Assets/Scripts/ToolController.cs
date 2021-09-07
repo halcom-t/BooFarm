@@ -9,21 +9,21 @@ using UnityEngine.Tilemaps;
 public class ToolController : MonoBehaviour
 {
     //地面タイル関連===============================================
-    //地面のタイル：種類
-    enum TileIndexNum
+    //地面の状態（タイルの種類）
+    enum GroundStatus
     {
         Normal, //草原（デフォ）
         Dry,    //乾いた畑
         Wet     //湿った畑
     }
 
-    //畑の範囲
-    const int FarmAreaW = 40;
-    const int FarmAreaH = 30;
-    //畑の各状態
-    TileIndexNum[,] groundStatus = new TileIndexNum[FarmAreaW, FarmAreaH];
+    //地面の範囲（タイル数）
+    const int GroundAreaW = 40;
+    const int GroundAreaH = 30;
+    //地面の各状態
+    GroundStatus[,] groundStatus = new GroundStatus[GroundAreaW, GroundAreaH];
 
-    //地面の各タイルの種類
+    //地面の各タイルの種類（GroundStatusの順に各タイルをセット）
     [SerializeField] TileBase[] groundTiles;
     //地面のタイルマップ(obj)
     [SerializeField] GameObject groundObj;
@@ -45,17 +45,6 @@ public class ToolController : MonoBehaviour
     public GameObject toolFrame;
 
     //作物関連====================================================
-    //作物プレファブ
-    [SerializeField] GameObject cropPre;
-
-    //作物の状態
-    enum CropStatus
-    {
-        None,
-        Seed    //種
-    }
-    //畑の各作物の成長状態
-    CropStatus[,] cropStatus = new CropStatus[FarmAreaW, FarmAreaH];
 
 
 
@@ -102,11 +91,8 @@ public class ToolController : MonoBehaviour
     /// </summary>
     void KuwaAction()
     {
-        //草原タイル(def)なら、乾いた畑のタイルに変更
-        if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)TileIndexNum.Normal])
-        {
-            groundTilemap.SetTile(ToolFramePosInt(), groundTiles[(int)TileIndexNum.Dry]);
-        }
+        int x = ToolFramePosInt().x;
+        int z = ToolFramePosInt().z;
     }
 
     /// <summary>
@@ -114,11 +100,7 @@ public class ToolController : MonoBehaviour
     /// </summary>
     void JoroAcion()
     {
-        //乾いた畑なら、湿った畑のタイルに変更
-        if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)TileIndexNum.Dry])
-        {
-            groundTilemap.SetTile(ToolFramePosInt(), groundTiles[(int)TileIndexNum.Wet]);
-        }
+
     }
 
     /// <summary>
@@ -126,18 +108,7 @@ public class ToolController : MonoBehaviour
     /// </summary>
     void TaneAction()
     {
-        //畑じゃないマスなら種まきしない
-        if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)TileIndexNum.Normal]) return;
-        //作物が植えてあるマスなら種まきしない
-        if (cropStatus[ToolFramePosInt().x, ToolFramePosInt().y] != CropStatus.None) return;
 
-        //種まき処理
-        {
-            //作物objの生成
-            Instantiate(cropPre, ToolFramePos(), Quaternion.identity);
-            //作物の状態を種状態に変更
-            cropStatus[ToolFramePosInt().x, ToolFramePosInt().y] = CropStatus.Seed;
-        }
     }
 
     /// <summary>

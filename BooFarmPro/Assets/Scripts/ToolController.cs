@@ -8,7 +8,7 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class ToolController : MonoBehaviour
 {
-    //地面タイル関連===============================================
+    //地面関連===================================================
     //地面の状態（タイルの種類）
     enum GroundStatus
     {
@@ -16,12 +16,9 @@ public class ToolController : MonoBehaviour
         Dry,    //乾いた畑
         Wet     //湿った畑
     }
-
     //地面の範囲（タイル数）
     const int GroundAreaW = 40;
     const int GroundAreaH = 30;
-    //地面の各状態
-    GroundStatus[,] groundStatus = new GroundStatus[GroundAreaW, GroundAreaH];
 
     //地面の各タイルの種類（GroundStatusの順に各タイルをセット）
     [SerializeField] TileBase[] groundTiles;
@@ -43,8 +40,6 @@ public class ToolController : MonoBehaviour
     [System.NonSerialized] public ToolStatus nowTool = ToolStatus.None;
     //道具の使用範囲
     public GameObject toolFrame;
-
-    //作物関連====================================================
 
 
 
@@ -90,9 +85,17 @@ public class ToolController : MonoBehaviour
     /// クワのアクション
     /// </summary>
     void KuwaAction()
-    {
-        int x = ToolFramePosInt().x;
-        int z = ToolFramePosInt().z;
+    { 
+        //草タイルを乾いた畑タイルに変更
+        if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)GroundStatus.Normal])
+        {
+            groundTilemap.SetTile(ToolFramePosInt(), groundTiles[(int)GroundStatus.Dry]);
+        }
+        //畑タイルを草タイルに変更（戻す）
+        else if (groundTilemap.GetTile(ToolFramePosInt()) != groundTiles[(int)GroundStatus.Normal])
+        {
+            groundTilemap.SetTile(ToolFramePosInt(), groundTiles[(int)GroundStatus.Normal]);
+        }
     }
 
     /// <summary>
@@ -100,7 +103,11 @@ public class ToolController : MonoBehaviour
     /// </summary>
     void JoroAcion()
     {
-
+        //乾いた畑タイルを湿った畑タイルに変更
+        if (groundTilemap.GetTile(ToolFramePosInt()) == groundTiles[(int)GroundStatus.Dry])
+        {
+            groundTilemap.SetTile(ToolFramePosInt(), groundTiles[(int)GroundStatus.Wet]);
+        }
     }
 
     /// <summary>

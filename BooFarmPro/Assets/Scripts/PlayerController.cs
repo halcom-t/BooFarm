@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
         Eixt    //UFOの出口
     }
     //現在接触中のアクションオブジェクト（タグ）
-    string nowOperationObjTag;
+    string nowOperationObjTag = "";
 
     //操作関連====================================================
     //タップした位置
@@ -110,13 +110,13 @@ public class PlayerController : MonoBehaviour
         //UIエリアなら処理をしない
         if (IsTappingUIArea()) return;
 
-        //接触中の操作オブジェクトがあるならアクション
+        //接触中の操作オブジェクトアクション（道具アクションより優先）
         if (nowOperationObjTag != "")
         {
             OperationObjAcion();
             return;
         }
-
+        
         //道具アクション
         if (toolCon != null) toolCon.ToolAction();
     }

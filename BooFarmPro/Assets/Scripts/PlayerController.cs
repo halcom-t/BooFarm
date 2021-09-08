@@ -137,7 +137,8 @@ public class PlayerController : MonoBehaviour
         //ベッド
         else if (nowOperationObjTag == OperationObjTags.Bed.ToString())
         {
-            gameManager.GameDayCount();
+            //データを翌日（朝6: 00）にしてセーブ
+            gameManager.SaveNextDayData();
         }
         //拠点出口
         else if (nowOperationObjTag == OperationObjTags.Eixt.ToString())

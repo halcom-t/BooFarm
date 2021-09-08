@@ -21,7 +21,7 @@ public class ToolController : MonoBehaviour
     const int GroundAreaH = 30;
 
     //地面の各タイルの種類（GroundStatusの順に各タイルをセット）
-    [SerializeField] TileBase[] groundTiles;
+    [SerializeField] List<TileBase> groundTiles;
     //地面のタイルマップ(obj)
     [SerializeField] GameObject groundObj;
     //地面のタイルマップ情報
@@ -155,5 +155,33 @@ public class ToolController : MonoBehaviour
         float y = toolFrame.transform.position.y - 0.5f;
 
         return new Vector3(x, y, 0);
+    }
+
+    /// <summary>
+    /// 全タイルの情報をリストで取得
+    /// </summary>
+    /// <returns>全タイルの情報</returns>
+    public List<TileData> GetTileData()
+    {
+        List<TileData> tileData = new List<TileData>();
+
+        //全タイルの情報をチェック
+        for (int x = 0; x < GroundAreaW; x++)
+        {
+            for (int y = 0; y < GroundAreaH; y++)
+            {
+                TileData data = new TileData();
+                //タイルの座標
+                data.tileX = x;
+                data.tileY = y;
+                //指定した位置の地面の状態（地面タイルの種類の番号）を取得
+                TileBase tile = groundTilemap.GetTile(new Vector3Int(x, y, 0));
+                data.groundStatus = groundTiles.IndexOf(tile);
+                //タイル情報をリストに追加
+                tileData.Add(data);
+            }
+        }
+
+        return tileData;
     }
 }

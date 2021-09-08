@@ -6,14 +6,27 @@ using System.IO;
 
 
 /// <summary>
+/// タイル情報
+/// </summary>
+[System.Serializable]
+public class TileData
+{
+    public int tileX;           //タイルのX座標
+    public int tileY;           //タイルのY座標
+    public int groundStatus;    //地面の状態
+    //public int cropStatus;      //作物の成長状態
+    //public int cropType;        //作物の種類
+}
+
+/// <summary>
 /// セーブデータの構造
 /// </summary>
 [System.Serializable]
 public class SaveData
 {
-    public float time;          //ゲーム内：時間
-    public int day;             //ゲーム内：日付
-    public int[,] groundStatus; //地面の各状態
+    public float time;              //ゲーム内：時間
+    public int day;                 //ゲーム内：日付
+    public List<TileData> tileData; //各タイルの情報
 }
 
 
@@ -54,17 +67,21 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// ゲームデータの保存
     /// </summary>
-    /// <param name="groundStatus">畑の各状態</param>
-    public void Save(int[,] groundStatus = null)
+    /// <param name="tileData">全タイル情報(上書きしない時はnullを渡す)</param>
+    public void Save(List<TileData> tileData = null)
     {
         SaveData data = new SaveData();
         data.time = gameTime;
         data.day = gameDay;
-        if (groundStatus != null) data.groundStatus = groundStatus;
+        if (tileData != null)
+        {
+            data.tileData = new List<TileData>(tileData);
+        }
 
         using (StreamWriter writer = new StreamWriter(Application.dataPath + "/savedata.json", false))
         {
             string jsonstr = JsonUtility.ToJson(data);
+            Debug.Log(jsonstr);
             writer.Write(jsonstr);
             writer.Flush();
         }

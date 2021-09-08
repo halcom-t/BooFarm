@@ -129,6 +129,8 @@ public class PlayerController : MonoBehaviour
         //UFO(拠点)
         if (nowOperationObjTag == OperationObjTags.Home.ToString())
         {
+            //データをセーブ（タイル情報更新）
+            gameManager.Save(toolCon.GetTileData());
             //UFOに入る（HomeSceneのロード）
             SceneManager.LoadScene("Home");
         }

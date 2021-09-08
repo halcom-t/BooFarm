@@ -689,7 +689,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 404458771}
-  dayTime: {fileID: 404458772}
+  dayText: {fileID: 404458772}
 --- !u!1 &951712216
 GameObject:
   m_ObjectHideFlags: 0

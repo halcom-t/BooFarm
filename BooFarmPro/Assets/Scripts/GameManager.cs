@@ -45,13 +45,22 @@ public class GameManager : MonoBehaviour
     //時間表示UI
     [SerializeField] Text timeText;
     //日付表示UI
-    [SerializeField] Text dayTime;
+    [SerializeField] Text dayText;
 
-
+    //コンポーネント==================================
+    ToolController toolCon;
 
     // Start is called before the first frame update
     void Start()
     {
+        //プレイヤーのToolControllerを取得（Mainシーンでしかアタッチされていない）
+        GameObject playerObj = this.transform.parent.gameObject;
+        toolCon = null;
+        if (playerObj != null)
+        {
+            toolCon = playerObj.GetComponent<ToolController>();
+        }      
+
         //日時UIを反映
         GameTimeReflect();
         GameDayReflect();
@@ -65,6 +74,25 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// アプリが終了する直前
+    /// </summary>
+    void OnApplicationQuit()
+    {
+        //ToolControllerがあるなら（Mainシーンで道具が使える状況なら）
+        if (toolCon != null)
+        {
+            //データをセーブ（タイル情報更新）
+            Save(toolCon.GetTileData());
+        }
+        else
+        {
+            //データをセーブ（タイル情報は更新しない）
+            Save();
+        }
+        
+    }
+
+    /// <summary>
     /// ゲームデータの保存
     /// </summary>
     /// <param name="tileData">全タイル情報(上書きしない時はnullを渡す)</param>
@@ -73,9 +101,15 @@ public class GameManager : MonoBehaviour
         SaveData data = new SaveData();
         data.time = gameTime;
         data.day = gameDay;
+        //タイルデータがあれば上書き、nullなら既存データのまま上書き
         if (tileData != null)
         {
             data.tileData = new List<TileData>(tileData);
+        }
+        else
+        {
+            SaveData nowData  = Load();
+            data.tileData = new List<TileData>(nowData.tileData);
         }
 
         using (StreamWriter writer = new StreamWriter(Application.dataPath + "/savedata.json", false))
@@ -143,7 +177,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void GameDayReflect()
     {
-        dayTime.text = gameDay + "日";
+        dayText.text = gameDay + "日";
     }
-
 } 

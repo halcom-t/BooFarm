@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// アプリが終了する直前
+    /// アプリが終了する時
     /// </summary>
     void OnApplicationQuit()
     {
@@ -89,7 +89,36 @@ public class GameManager : MonoBehaviour
             //データをセーブ（タイル情報は更新しない）
             Save();
         }
-        
+        Debug.Log("終了");
+    }
+
+    /// <summary>
+    /// アプリが中断、再開（起動）される時
+    /// </summary>
+    /// <param name="pauseStatus"></param>
+    void OnApplicationPause(bool pauseStatus)
+    {
+        //一時停止
+        if (pauseStatus)
+        {
+            //ToolControllerがあるなら（Mainシーンで道具が使える状況なら）
+            if (toolCon != null)
+            {
+                //データをセーブ（タイル情報更新）
+                Save(toolCon.GetTileData());
+            }
+            else
+            {
+                //データをセーブ（タイル情報は更新しない）
+                Save();
+            }
+            Debug.Log("中断");
+        }
+        //再開時（起動時）
+        else
+        {
+            Debug.Log("再開");
+        }
     }
 
     /// <summary>
